@@ -60,19 +60,14 @@ jobs:
           flutter build apk --release --split-per-abi
     
       # 上传 APK 至 Artifacts
-      - name: Upload Release
-        uses: softprops/action-gh-release@v1
+      - name: Upload APK to Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: "tv_${{ fromJson(steps.version.outputs.content).version }}"
-          name: "tv_${{ fromJson(steps.version.outputs.content).version }}"
-          body: "# Android TV \n${{ fromJson(steps.version.outputs.content).version_desc }}"
-          prerelease: ${{ fromJson(steps.version.outputs.content).prerelease }}
-          files: |
-            simple_live_tv_app/build/app/outputs/flutter-apk/app-x86_64-release.apk
-            simple_live_tv_app/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+          name: android_tv
+          path: |
             simple_live_tv_app/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            simple_live_tv_app/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+            simple_live_tv_app/build/app/outputs/flutter-apk/app-x86_64-release.apk
     
       # 读取版本信息
       - name: Read version
@@ -95,11 +90,12 @@ jobs:
           name: "tv_${{ fromJson(steps.version.outputs.content).version }}"
           body: "# Android TV \n${{ fromJson(steps.version.outputs.content).version_desc }}"
           prerelease: ${{ fromJson(steps.version.outputs.content).prerelease }}
-          token: ${{ secrets.TOKEN }}
           files: |
             simple_live_tv_app/build/app/outputs/flutter-apk/app-x86_64-release.apk
             simple_live_tv_app/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
             simple_live_tv_app/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
       # 完成
       - run: echo "🍏 This job's status is ${{ job.status }}."
